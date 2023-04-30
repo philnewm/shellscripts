@@ -45,6 +45,7 @@ destination_maya_file=$destination_maya_dir"maya_pref"$backup_date_time
 #==========>MAYA BACKUP LOGIC<==========
 echo "compressing $maya_config_dir and moving file to $destination_maya_file"
 cd "$maya_config_dir"
+# TODO create zip file in tmp first and then upload
 tar -czf $destination_maya_file .
 # zip -6rq $destination_maya_file .
 # TODO check if file got created at destination
