@@ -47,9 +47,11 @@ maya_backup_tmp=$tmp_loc$maya_backup_file_name
 destination_maya_file=$destination_maya_dir$maya_backup_file_name
 
 #==========>MAYA CONFIG BACKUP LOGIC<==========
+# TODO wrap into function
 if [ -d "$maya_config_dir" ]; then
     cd "$maya_config_dir" || exit 1
     echo "found \"$maya_config_dir\" compressing ..."
+    # TODO find windows compatible solution for zip archive
     tar -czf "$maya_backup_tmp" .
     if [ -f "$maya_backup_tmp" ]; then
         echo "\"$maya_backup_tmp\" backup succeeded"
@@ -60,6 +62,7 @@ if [ -d "$maya_config_dir" ]; then
             echo "config transfer to \"$destination_maya_file\" successfull"
             exit 0
         else
+            # TODO move cleanup process into it's own function 
             echo "config transfer to \"$destination_maya_file\" failed"
             rm "$maya_backup_tmp"
             echo "removed tmp file  \"maya_backup_tmp\""
