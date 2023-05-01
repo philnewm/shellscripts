@@ -36,16 +36,36 @@ echo "ocio config path: $ocio_config_dir"
 
 #==========>SYSTEM DATA<==========
 backup_date_time=_$(date +%d_%m_%y_%H_%M)
+file_ending=.zip
+tmp_loc=/tmp/
 
-backup_dirs=($blender_config_dir $maya_config_dir $houdini_config_dir $ocio_config_dir)
+# backup_dirs=("$blender_config_dir" "$maya_config_dir" "$houdini_config_dir" "$ocio_config_dir")
 
 destination_maya_dir=/mnt/library/maya/
-destination_maya_file=$destination_maya_dir"maya_pref"$backup_date_time
+maya_backup_file_name="maya_pref"$backup_date_time$file_ending
+maya_backup_tmp=$tmp_loc$maya_backup_file_name
+destination_maya_file=$destination_maya_dir$maya_backup_file_name
 
-#==========>MAYA BACKUP LOGIC<==========
-echo "compressing $maya_config_dir and moving file to $destination_maya_file"
-cd "$maya_config_dir"
-# TODO create zip file in tmp first and then upload
-tar -czf $destination_maya_file .
-# zip -6rq $destination_maya_file .
-# TODO check if file got created at destination
+#==========>MAYA CONFIG BACKUP LOGIC<==========
+if [ -d "$maya_config_dir" ]; then
+    cd "$maya_config_dir" || exit 1
+    echo "found \"$maya_config_dir\" compressing ..."
+    tar -czf "$maya_backup_tmp" .
+    if [ -f "$maya_backup_tmp" ]; then
+        echo "\"$maya_backup_tmp\" backup succeeded"
+
+        # TODO change mv to scp to work independent from smb shares
+        mv "$maya_backup_tmp" "$destination_maya_file"
+        if [ -f "$destination_maya_file" ]; then
+            echo "config transfer to \"$destination_maya_file\" successfull"
+            exit 0
+        else
+            echo "config transfer to \"$destination_maya_file\" failed"
+            rm "$maya_backup_tmp"
+            echo "removed tmp file  \"maya_backup_tmp\""
+            exit 1
+        fi
+    fi
+    exit 0
+fi
+echo "$maya_config_dir doesn't exist"
