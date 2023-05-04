@@ -1,5 +1,7 @@
 #! /usr/bin/bash
 
+tmp_loc=/tmp/
+
 update_system() 
 {
 	sude dnf update -y
@@ -17,7 +19,7 @@ download_nomachine()
 	# TODO implement without dependecy on smb shares
 	cp /mnt/library/system_setup/software_setups/linux/nomachine*.rpm /tmp/
 
-	cd /tmp || exit
+	cd $tmp_loc || exit
 	sudo rpm -i nomachine*.rpm
 
 	rm -f nomachine*.rpm
@@ -28,6 +30,6 @@ install_nvidia_drivers
 
 
 
-download_nomachine
+# download_nomachine
 
 
