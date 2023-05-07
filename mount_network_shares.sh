@@ -3,58 +3,121 @@
 share_mounts=(documents archive library ressources learning)
 server_shares=(documents usb_backup library ressources learning)
 mount_point=mnt
-server=fileserver
-fs_type=cifs
-mnt_options='credentials=/home/mainws/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
-DirectoryMode=0700'
-idle=60
+
 tmp_path=/tmp/
-main_path=/mnt/Projects/tmp/mount/ #/mnt/Projects/tmp/mount/
+main_path=/mnt/Projects/tmp/mount/
 
 # TODO move into function
-for ((i=0; i<${#share_mounts[@]}; i++));
-do
-    mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "${share_mounts[i]}")
-
-    mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server" "${server_shares[i]}")
-    mount_content=$(printf "%s\nWhere=/%s/%s\n" "$mount_content" "$mount_point" "${share_mounts[i]}")
-    mount_content=$(printf "%s\nType=%s\n" "$mount_content" "$fs_type")
-    mount_content=$(printf "%s\nOptions=%s\n" "$mount_content" "$mnt_options")
-
-    mount_content=$(printf "%s\n\n[Install]\n" "$mount_content")
-    mount_content=$(printf "%s\nWantedBy=multi-user.target" "$mount_content") 
+createsystemdunitmountfiles()
+{
+    local -n share_mounts=$1
+    local -n server_shares=$2
+    local server_address=$3
     
-    mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".mount"
+    # ===> Settngs <===
+    local idle=60
+    local fs_type=cifs
+    local mnt_options='credentials=/home/mainws/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
+    DirectoryMode=0700'
 
-    echo "$mount_content" > "$mount_file"
+    for ((i=0; i<${#share_mounts[@]}; i++));
+    do
+        # create .mount systemd unit files
+        mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "${share_mounts[i]}")
 
-    auto_mount_content=$(printf "[Unit]\nDescription=mount %s share\n" "${share_mounts[i]}")
-    auto_mount_content=$(printf "%s\n\n[Automount]\nWhere=/%s/%s\n" "$auto_mount_content" "$mount_point" "${share_mounts[i]}")
-    auto_mount_content=$(printf "%s\nTimeoutIdleSec=%s\n\n" "$auto_mount_content" "$idle")
-    auto_mount_content=$(printf "%s\n\n[INSTALL]\nWantedBy=multi-user.target" "$auto_mount_content")
+        mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server_address" "${server_shares[i]}")
+        mount_content=$(printf "%s\nWhere=/%s/%s\n" "$mount_content" "$mount_point" "${share_mounts[i]}")
+        mount_content=$(printf "%s\nType=%s\n" "$mount_content" "$fs_type")
+        mount_content=$(printf "%s\nOptions=%s\n" "$mount_content" "$mnt_options")
 
-    auto_mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".automount"
+        mount_content=$(printf "%s\n\n[Install]\n" "$mount_content")
+        mount_content=$(printf "%s\nWantedBy=multi-user.target" "$mount_content")
+        
+        mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".mount"
 
-    echo "$auto_mount_content" > "$auto_mount_file"
-done
+        echo "$mount_content" > "$mount_file"
 
-# TODO move into function
+        # create .automount systemd unit files
+        auto_mount_content=$(printf "[Unit]\nDescription=mount %s share\n" "${share_mounts[i]}")
+        auto_mount_content=$(printf "%s\n\n[Automount]\nWhere=/%s/%s\n" "$auto_mount_content" "$mount_point" "${share_mounts[i]}")
+        auto_mount_content=$(printf "%s\nTimeoutIdleSec=%s\n\n" "$auto_mount_content" "$idle")
+        auto_mount_content=$(printf "%s\n\n[INSTALL]\nWantedBy=multi-user.target" "$auto_mount_content")
+
+        auto_mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".automount"
+
+        echo "$auto_mount_content" > "$auto_mount_file"
+    done
+}
+
+movetosystempath()
+{
+    local -n share_mounts=$1
+    local tmp_path=$2
+    local main_path=$3
+    local mount_point=$4
+
+    for dir in "${share_mounts[@]}"; do
+        sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".mount" "$main_path""$mount_point"-"${share_mounts[i]}"".mount"
+        sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".automount" "$main_path""$mount_point"-"${share_mounts[i]}"".automount"
+    done
+}
+
+addservertohosts()
+{
+    local server_address=$1
+    local server_name=$2
+    # TODO find out if system varibale for hosts does exist
+    local host_file=$3
+    server_string=$(printf "\n#NAS\n%s %s" "$server_address" "$server_name")
+    if ! echo "$server_string" | sudo tee -a /etc/hosts > /dev/null; then
+        echo "failed writing $server_string to $host_file"
+    fi
+}
+
 # TODO create cleanup function
-# move scripts from /tmp/ to /etc/systemd/system
-for ((i=0; i<${#share_mounts[@]}; i++));
-do
-    sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".mount" "$main_path""$mount_point"-"${share_mounts[i]}"".mount"
-    sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".automount" "$main_path""$mount_point"-"${share_mounts[i]}"".automount"
-done
+createmountpointsforuser()
+{
+    local -n dirname=$1
+    local pathtodir=$2
 
-# TODO move into function
-# TODO create cleanup function
-# TODO change permission after creation
-cd /tmp || exit
-for ((i=0; i<${#share_mounts[@]}; i++));
-do
-    sudo mkdir "${share_mounts[i]}"
-done
+    cd "$pathtodir" || exit
+
+    for dir in "${dirname[@]}"; do
+        if ! sudo mkdir "$dir";
+        then
+            echo "Failed to create mount point at \"$pathtodir$dir\""
+        fi
+
+        if ! sudo chown "$USER":"$USER" "$dir";
+        then
+            echo "failed to change owner for \"$dir\" to user \"$USER\""
+        fi
+    done
+}
+
+cleanupdirs()
+{
+    local -n dirname=$1
+    local pathtodir=$2
+    cd "$pathtodir" || exit
+    for ((i=0; i<${#share_mounts[@]}; i++));
+    do
+        # create mount points
+        sudo rm -r "${dirname[i]}"
+    done
+}
+
+cleanupfiles()
+{
+    local filename=$1
+    local pathtofile=$2
+    cd "$pathtofile" || exit
+    for ((i=0; i<${#share_mounts[@]}; i++));
+    do
+        # create mount points
+        sudo rm -r "${filename[i]}"
+    done
+}
 
 # sudo systemctl daemon-reload
 
