@@ -1,18 +1,12 @@
 #! /usr/bin/bash
 
-share_mounts=(documents archive library ressources learning)
-server_shares=(documents usb_backup library ressources learning)
-mount_point=mnt
-
-tmp_path=/tmp/
-main_path=/mnt/Projects/tmp/mount/
-
-# TODO move into function
 createsystemdunitmountfiles()
 {
-    local -n share_mounts=$1
-    local -n server_shares=$2
-    local server_address=$3
+    local -n local_mounts=$1
+    local -n external_mounts=$2
+    local server_name=$3
+    local mount_point=$4
+    local tmp_path=$5
     
     # ===> Settngs <===
     local idle=60
@@ -20,30 +14,30 @@ createsystemdunitmountfiles()
     local mnt_options='credentials=/home/mainws/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
     DirectoryMode=0700'
 
-    for ((i=0; i<${#share_mounts[@]}; i++));
+    for ((i=0; i<${#local_mounts[@]}; i++));
     do
         # create .mount systemd unit files
-        mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "${share_mounts[i]}")
+        mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "${local_mounts[i]}")
 
-        mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server_address" "${server_shares[i]}")
-        mount_content=$(printf "%s\nWhere=/%s/%s\n" "$mount_content" "$mount_point" "${share_mounts[i]}")
+        mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server_name" "${external_mounts[i]}")
+        mount_content=$(printf "%s\nWhere=/%s/%s\n" "$mount_content" "$mount_point" "${local_mounts[i]}")
         mount_content=$(printf "%s\nType=%s\n" "$mount_content" "$fs_type")
         mount_content=$(printf "%s\nOptions=%s\n" "$mount_content" "$mnt_options")
 
         mount_content=$(printf "%s\n\n[Install]\n" "$mount_content")
         mount_content=$(printf "%s\nWantedBy=multi-user.target" "$mount_content")
         
-        mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".mount"
+        mount_file="$tmp_path""$mount_point"-"${local_mounts[i]}"".mount"
 
         echo "$mount_content" > "$mount_file"
 
         # create .automount systemd unit files
-        auto_mount_content=$(printf "[Unit]\nDescription=mount %s share\n" "${share_mounts[i]}")
-        auto_mount_content=$(printf "%s\n\n[Automount]\nWhere=/%s/%s\n" "$auto_mount_content" "$mount_point" "${share_mounts[i]}")
+        auto_mount_content=$(printf "[Unit]\nDescription=mount %s share\n" "${local_mounts[i]}")
+        auto_mount_content=$(printf "%s\n\n[Automount]\nWhere=/%s/%s\n" "$auto_mount_content" "$mount_point" "${local_mounts[i]}")
         auto_mount_content=$(printf "%s\nTimeoutIdleSec=%s\n\n" "$auto_mount_content" "$idle")
         auto_mount_content=$(printf "%s\n\n[INSTALL]\nWantedBy=multi-user.target" "$auto_mount_content")
 
-        auto_mount_file="$tmp_path""$mount_point"-"${share_mounts[i]}"".automount"
+        auto_mount_file="$tmp_path""$mount_point"-"${local_mounts[i]}"".automount"
 
         echo "$auto_mount_content" > "$auto_mount_file"
     done
@@ -57,8 +51,8 @@ movetosystempath()
     local mount_point=$4
 
     for dir in "${share_mounts[@]}"; do
-        sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".mount" "$main_path""$mount_point"-"${share_mounts[i]}"".mount"
-        sudo mv "$tmp_path""$mount_point"-"${share_mounts[i]}"".automount" "$main_path""$mount_point"-"${share_mounts[i]}"".automount"
+        sudo mv "$tmp_path""$mount_point"-"$dir"".mount" "$main_path""$mount_point"-"$dir"".mount"
+        sudo mv "$tmp_path""$mount_point"-"$dir"".automount" "$main_path""$mount_point"-"$dir"".automount"
     done
 }
 
@@ -74,7 +68,6 @@ addservertohosts()
     fi
 }
 
-# TODO create cleanup function
 createmountpointsforuser()
 {
     local -n dirname=$1
@@ -119,9 +112,14 @@ cleanupfiles()
     done
 }
 
-# sudo systemctl daemon-reload
+reloaddaemon()
+{
+    local -n share_mounts
+    local mount_point
+    sudo systemctl daemon-reload
 
-# for ((i=0; i<${#share_mounts[@]}; i++));
-# do
-# sudo systemctl enable "$mount_point"-"${share_mounts[i]}".automount --now
-# done
+    for ((i=0; i<${#share_mounts[@]}; i++));
+    do
+        sudo systemctl enable "$mount_point"-"${share_mounts[i]}".automount --now
+    done
+}
