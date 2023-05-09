@@ -68,18 +68,20 @@ addservertohosts()
     fi
 }
 
-createmountpointsforuser()
+createmountpointforuser()
 {
     local -n dirname=$1
     local pathtodir=$2
 
-    cd "$pathtodir" || exit
+    cd "$pathtodir" || exit 1
 
     for dir in "${dirname[@]}"; do
         if ! sudo mkdir "$dir";
         then
             echo "Failed to create mount point at \"$pathtodir$dir\""
         fi
+
+        echo "created mount point at \"$pathtodir$dir\""
 
         if ! sudo chown "$USER":"$USER" "$dir";
         then
@@ -122,4 +124,16 @@ reloaddaemon()
     do
         sudo systemctl enable "$mount_point"-"${share_mounts[i]}".automount --now
     done
+}
+
+writecredentials()
+{
+    local username=$1
+    local password=$2
+    local credentials_file=$3
+
+    credentials_content=$(printf "username=%s" "$username")
+    credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
+
+    echo "$credentials_content" > "$HOME/$credentials_file"
 }

@@ -12,16 +12,18 @@ system_path=/etc/systemd/system/
 # shellcheck source=mount_network_shares.sh
 source mount_network_shares.sh
 
-if ! createmountpointsforuser share_mounts /mnt/;
+if ! createmountpointsforuser mount_points "/""$mount_dir""/";
 then
-    cleanupdirs share_mounts /mnt/
+    cleanupdirs mount_points "/""$mount_dir""/"
 fi
 
 addservertohosts $server_address $server_name "/etc/hosts"
+
+# WARNING don't push credentials to github
+writecredentials "<user_name>" "<password>" ".smb"
 
 createsystemdunitmountfiles mount_points server_shares $server_name $mount_dir $tmp_path
 
 movetosystempath mount_points $tmp_path $system_path $mount_dir
 
 reloaddaemon mount_points $mount_dir
-
