@@ -13,8 +13,8 @@ createsystemdunitmountfiles()
     # ===> Settngs <===
     local idle=60
     local fs_type=cifs
-    local mnt_options='credentials=/home/mainws/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
-    DirectoryMode=0700'
+    local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
+    DirectoryMode=0700"
 
     for ((i=0; i<${#local_mounts[@]}; i++));
     do
@@ -53,10 +53,13 @@ movetosystempath()
     local tmp_path=$2
     local main_path=$3
     local mount_point=$4
+    local owner=$5
 
     for dir in "${share_mounts[@]}"; do
         sudo mv "$tmp_path""$mount_point"-"$dir"".mount" "$main_path""$mount_point"-"$dir"".mount"
         sudo mv "$tmp_path""$mount_point"-"$dir"".automount" "$main_path""$mount_point"-"$dir"".automount"
+        sudo chown "$owner":"$owner" "$main_path""$mount_point"-"$dir"".mount"
+        sudo chown "$owner":"$owner" "$main_path""$mount_point"-"$dir"".automount"
     done
 }
 
@@ -70,6 +73,14 @@ addservertohosts()
     if ! echo "$server_string" | sudo tee -a /etc/hosts > /dev/null; then
         echo "failed writing $server_string to $host_file"
     fi
+}
+
+changedirowner()
+{
+    local dir=$1
+    local owner=$2
+
+    chown "$owner":"$owner" $dir
 }
 
 createmountpointforuser()
@@ -140,4 +151,5 @@ writecredentials()
     credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
 
     echo "$credentials_content" > "$HOME/$credentials_file"
+    # TODO change owner to ROOT + change permissions to 600
 }
