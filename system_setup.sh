@@ -12,10 +12,12 @@ system_path=/etc/systemd/system/
 # shellcheck source=mount_network_shares.sh
 source mount_network_shares.sh
 
-if ! createmountpointsforuser mount_points "/""$mount_dir""/";
+if ! createmountpointforuser mount_points "/""media""/";
 then
-    cleanupdirs mount_points "/""$mount_dir""/"
+    cleanupdirs mount_points "/""media""/"
 fi
+
+# TODO use one main loop to execute all neccessary looping comamnds
 
 addservertohosts $server_address $server_name "/etc/hosts"
 

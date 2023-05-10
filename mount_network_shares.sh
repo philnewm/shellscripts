@@ -1,5 +1,7 @@
 #! /usr/bin/bash
 
+# TODO check if operation already done
+# TODO add echo infos for helpfull feedback
 createsystemdunitmountfiles()
 {
     local -n local_mounts=$1
@@ -17,6 +19,7 @@ createsystemdunitmountfiles()
     for ((i=0; i<${#local_mounts[@]}; i++));
     do
         # create .mount systemd unit files
+        # TODO move into own function
         mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "${local_mounts[i]}")
 
         mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server_name" "${external_mounts[i]}")
@@ -32,6 +35,7 @@ createsystemdunitmountfiles()
         echo "$mount_content" > "$mount_file"
 
         # create .automount systemd unit files
+        # TODO move into own function
         auto_mount_content=$(printf "[Unit]\nDescription=mount %s share\n" "${local_mounts[i]}")
         auto_mount_content=$(printf "%s\n\n[Automount]\nWhere=/%s/%s\n" "$auto_mount_content" "$mount_point" "${local_mounts[i]}")
         auto_mount_content=$(printf "%s\nTimeoutIdleSec=%s\n\n" "$auto_mount_content" "$idle")
