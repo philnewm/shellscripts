@@ -75,14 +75,6 @@ addservertohosts()
     fi
 }
 
-changedirowner()
-{
-    local dir=$1
-    local owner=$2
-
-    chown "$owner":"$owner" $dir
-}
-
 createmountpointforuser()
 {
     local -n dirname=$1
@@ -151,5 +143,6 @@ writecredentials()
     credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
 
     echo "$credentials_content" > "$HOME/$credentials_file"
-    # TODO change owner to ROOT + change permissions to 600
+    sudo chown "$owner":"$owner" "$HOME/$credentials_file"
+    sudo chmod 600 "$HOME/$credentials_file"
 }

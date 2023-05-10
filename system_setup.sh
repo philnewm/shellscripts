@@ -22,10 +22,10 @@ fi
 addservertohosts $server_address $server_name "/etc/hosts"
 
 # WARNING don't push credentials to github
-writecredentials "<user_name>" "<password>" ".smb"
+writecredentials "<user_name>" "<password>" ".smb" "root"
 
 createsystemdunitmountfiles mount_points server_shares $server_name $mount_dir $tmp_path
 
-movetosystempath mount_points $tmp_path $system_path $mount_dir
+movetosystempath mount_points $tmp_path $system_path $mount_dir "root"
 
 reloaddaemon mount_points $mount_dir
