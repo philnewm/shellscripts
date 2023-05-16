@@ -10,3 +10,5 @@ test_root_cleanup_dir
 # === file  ===
 test_check_file_existence_true
 test_check_file_existence_false
+test_change_owner_to_user
+test_change_owner_to_root
