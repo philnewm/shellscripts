@@ -27,3 +27,16 @@ root_cleanup_dir()
     echo "[OK] Removed $dir_name from $path using root permissions"
     return 0
 }
+
+create_dir_as_root()
+{
+    local path=$1 
+    if sudo mkdir "$path";
+    then
+        echo "[OK] created dir \"$path\" as root"
+        return 0
+    fi
+
+    echo "[Fail] Can't create dir \"$path\" as root"
+    return 1
+}

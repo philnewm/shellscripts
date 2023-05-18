@@ -27,7 +27,7 @@ test_root_cleanup_dir()
 
     if cleanup_dir "$dir_name" "$path";
     then
-        echo "[FAIL] $USER was able to deleted $dir_name"
+        echo "[FAIL] ${FUNCNAME[0]} $USER was able to deleted $dir_name"
         return 1
     fi
 
@@ -38,4 +38,21 @@ test_root_cleanup_dir()
         echo "[PASS]: ${FUNCNAME[0]}"
         return 0
     fi
+}
+
+test_create_dir_as_root()
+{
+    local path=../root_tmp/test_dir
+    create_dir_as_root "$path"
+    dir_owner=$(stat -c "%U" $path)
+
+    if [ "$dir_owner" = root ];
+    then
+        echo "[PASS] ${FUNCNAME[0]} \"$path\" created as root"
+        sudo rm -R $path
+        return 0
+    fi
+
+    echo "[FAIL] ${FUNCNAME[0]} unable to create \"$path\" as root"
+    return 1
 }

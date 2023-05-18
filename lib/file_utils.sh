@@ -47,3 +47,49 @@ change_owner_to_root()
     echo "[FAIL] Can't change owner for \"$path\" to user root"
     return 1
 }
+
+check_string_in_file()
+{
+    # === parameters ===
+    local search_string=$1
+    local path=$2
+
+    # === logic ===
+    if grep -Fxq "$search_string" "$path";
+    then
+        echo "[INFO] \"$search_string\" already exists in \"$path\""
+        return 0
+    fi
+
+    return 1
+}
+
+append_string_to_file()
+{
+    # === parameters ===
+    local input_string=$1
+    local file_name=$2
+
+    # === logic ===
+    if ! echo "$input_string" >> "$file_name"; then
+        echo "[FAIL] Can't write \"$input_string\" to \"$file_name\""
+        return 1
+    fi
+
+    return 0
+}
+
+append_string_to_file_as_root()
+{
+    # === parameters ===
+    local input_string=$1
+    local file_name=$2
+
+    # === logic ===
+    if ! echo "$input_string" | sudo tee -a "$file_name" > /dev/null; then
+        echo "[FAIL] Can't write \"$input_string\" to \"$file_name\""
+        return 1
+    fi
+
+    return 0
+}

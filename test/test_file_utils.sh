@@ -59,7 +59,7 @@ test_change_owner_to_user()
 
 test_change_owner_to_root()
 {
-    file_name=../tmp/some_file
+    local file_name=../tmp/some_file
     touch $file_name
 
     change_owner_to_root "$file_name"
@@ -75,4 +75,63 @@ test_change_owner_to_root()
     echo "[FAIL] $file_name not owned by root"
     rm $file_name
     return 0
+}
+
+test_check_string_in_file()
+{
+    local string_content="This is a test"
+    local path=../tmp/write_test
+    touch $path
+    echo "$string_content" >> "$path"
+
+    if check_string_in_file "$string_content" "$path";
+    then
+        echo "[PASS]: ${FUNCNAME[0]}"
+        return 0
+    fi
+
+    echo "[FAIL] ${FUNCNAME[0]} \"$string_content\" not found in \"$path\""
+    return 1
+}
+
+test_append_string_to_file()
+{
+    local file_name=../tmp/write_test
+    local test_string="This is a test"
+
+    touch "$file_name"
+
+    append_string_to_file "$test_string" "$file_name"
+
+    if grep -Fxq "$test_string" "$file_name";
+    then
+        echo "[PASS]: ${FUNCNAME[0]}"
+        rm $file_name
+        return 0
+    fi
+
+    echo "[FAIL] ${FUNCNAME[0]} \"$test_string\" not written to \"$file_name\""
+    rm $file_name
+    return 1
+}
+
+test_append_string_to_file_as_root()
+{
+    local file_name=../tmp/write_test
+    local test_string="This is a test"
+
+    sudo touch "$file_name"
+
+    append_string_to_file_as_root "$test_string" "$file_name"
+
+    if grep -Fxq "$test_string" "$file_name";
+    then
+        echo "[PASS]: ${FUNCNAME[0]}"
+        sudo rm -f $file_name
+        return 0
+    fi
+
+    echo "[FAIL] ${FUNCNAME[0]} \"$test_string\" not written to \"$file_name\""
+    sudo rm -f $file_name
+    return 1
 }
