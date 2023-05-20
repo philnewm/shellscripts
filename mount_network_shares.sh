@@ -2,8 +2,11 @@
 
 # This file contains a bunch of functions related to mounting network shares on boot
 
-source /lib/network_utils.sh
+source /lib/sys_utils.sh
 
+hosts_file=/etc/hosts
+server_address=10.32.64.200
+server_name=fileserver
 server_string=$(printf "\n#NAS\n%s %s" "$server_address" "$server_name")
 
 
@@ -28,6 +31,12 @@ write_credentials_file()
     local password=$2
     local path=$3
 
+    if [ -f "$path" ];
+    then
+        echo "\"$path\" already exists"
+        return
+    fi
+
     credentials_content=$(printf "username=%s" "$username")
     credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
 
@@ -37,7 +46,11 @@ write_credentials_file()
 }
 
 # disable_selinux_temporarily
+disable_selinux_temporarily
 # credentials
+write_credentials_file "$username" "$password"
+# write server_name
+append_string_to_file_as_root "$server_string" "$hosts_file"
 # in loop
 # {
 # mount-points
