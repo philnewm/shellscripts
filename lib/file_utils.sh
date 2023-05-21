@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 # This file contains a bunch of functions related to file operations
 
@@ -84,6 +84,12 @@ append_string_to_file_as_root()
     # === parameters ===
     local input_string=$1
     local file_name=$2
+
+    if grep -Fxq "$input_string" "$file_name";
+    then
+        echo "skipping \"$input_string\" already found in file \"$file_name\""
+        return 0
+    fi
 
     # === logic ===
     if ! echo "$input_string" | sudo tee -a "$file_name" > /dev/null; then

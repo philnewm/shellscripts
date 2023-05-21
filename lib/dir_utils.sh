@@ -2,6 +2,20 @@
 
 # This file contains a bunch of functions related to directory operations.
 
+check_dir_existence()
+{
+    # === parameters ===
+    local path=$1
+
+    # === logic ===
+    if [ -d "$path" ]; then
+        echo "[INFO] Skipping \"$path\" -> already exists."
+        return 0
+    fi
+
+    return 1
+}
+
 cleanup_dir()
 {
     # === parameters ===
@@ -31,6 +45,12 @@ root_cleanup_dir()
 create_dir_as_root()
 {
     local path=$1 
+
+    if [ -d "$path" ]; then
+        echo "[INFO] Skipping \"$path\" -> already exists."
+        return 0
+    fi
+
     if sudo mkdir "$path";
     then
         echo "[OK] created dir \"$path\" as root"

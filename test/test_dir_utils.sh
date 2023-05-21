@@ -1,6 +1,21 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 source ../lib/dir_utils.sh
+
+check_dir_existence()
+{
+    path=../tmp/
+    dir_name=some_file
+
+    if check_file_existence "$path""$dir_name";
+    then
+        echo "[FAIL] $dir_name in $path not detected"
+        return 0
+    fi
+
+    echo "[PASS]: ${FUNCNAME[0]}"
+    return 0
+}
 
 test_cleanup_dir()
 {

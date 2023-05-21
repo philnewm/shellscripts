@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 mount_points=(documents archive library ressources learning)
 server_shares=(documents usb_backup library ressources learning)

@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 source ../lib/sys_utils.sh
 

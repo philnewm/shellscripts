@@ -19,15 +19,22 @@ write_systemd_mount_file()
     local external_mount=$2
     local mount_point=$3
     local server_name=$4
-    local tmp_path=$5
-    
+    local dest_path=$5
+
+    # === combined variables ===
+    mount_file="$dest_path""$mount_point"-"$local_mount"".mount"
+
+    if [ -f "$mount_file" ];
+    then
+        echo "skipping \"$mount_file\" already exists"
+        return 0
+    fi
+
     # === settings ===
     local fs_type=cifs
     local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
-    DirectoryMode=0700"
-
-    # === combined variables ===
-    mount_file="$tmp_path""$mount_point"-"$local_mount"".mount"
+DirectoryMode=0700"
+# TODO move directory mode to it's own line
 
     mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "$local_mount")
 
@@ -40,7 +47,8 @@ write_systemd_mount_file()
     mount_content=$(printf "%s\nWantedBy=multi-user.target" "$mount_content")
 
     # === logic ===
-    echo "$mount_content" > "$mount_file"
+    echo "$mount_content" | sudo tee "$mount_file" > /dev/null
+    return 0
 }
 
 write_systemd_auto_mount_file()
@@ -50,7 +58,15 @@ write_systemd_auto_mount_file()
     local external_mount=$2
     local mount_point=$3
     local server_name=$4
-    local tmp_path=$5
+    local dest_path=$5
+
+    auto_mount_file="$dest_path""$mount_point"-"$local_mount"".automount"
+
+    if [ -f "$auto_mount_file" ];
+    then
+        echo "skipping \"$auto_mount_file\" already exists"
+        return 0
+    fi
 
     # === settings ===
     local idle=60
@@ -60,7 +76,5 @@ write_systemd_auto_mount_file()
     auto_mount_content=$(printf "%s\nTimeoutIdleSec=%s\n\n" "$auto_mount_content" "$idle")
     auto_mount_content=$(printf "%s\n\n[Install]\nWantedBy=multi-user.target" "$auto_mount_content")
 
-    auto_mount_file="$tmp_path""$mount_point"-"$local_mount"".automount"
-
-    echo "$auto_mount_content" > "$auto_mount_file"
+    echo "$auto_mount_content" | sudo tee "$auto_mount_file" > /dev/null
 }
