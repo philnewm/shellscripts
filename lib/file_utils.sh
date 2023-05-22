@@ -16,38 +16,6 @@ check_file_existence()
     return 1
 }
 
-change_owner_to_user()
-{
-    # === parameters ===
-    local path=$1
-
-    # === logic ===
-    if sudo chown "$USER":"$USER" "$path";
-    then
-        echo "[OK] Changed owner of \"$path\" to \"$USER\""
-        return 0
-    fi
-
-    echo "[FAIL] Can't change owner for \"$path\" to user \"$USER\""
-    return 1
-}
-
-change_owner_to_root()
-{
-    # === parameters ===
-    local path=$1
-
-    # === logic ===
-    if sudo chown root:root "$path";
-    then
-        echo "[OK] Changed owner of $path to root"
-        return 0
-    fi
-
-    echo "[FAIL] Can't change owner for \"$path\" to user root"
-    return 1
-}
-
 check_string_in_file()
 {
     # === parameters ===
