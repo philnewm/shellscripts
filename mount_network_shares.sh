@@ -41,28 +41,31 @@ write_credentials_file()
     return 1
 }
 
-write_credentials_file "$username" "$password" "$credentials_path"
-append_string_to_file_as_root "$server_string" "$hosts_file"
-if [ "$(getenforce)" = Enforcing ] > /dev/null;
-then
-    touch state
-    disable_selinux_temporarily
-fi
+mount_shares()
+{
+    write_credentials_file "$username" "$password" "$credentials_path"
+    append_string_to_file_as_root "$server_string" "$hosts_file"
+    if [ "$(getenforce)" = Enforcing ] > /dev/null;
+    then
+        touch state
+        disable_selinux_temporarily
+    fi
 
-for ((i=0; i<${#share_mounts[@]}; i++));
-do
-    mount_path=/$mount_dir/${share_mounts[i]}
-    create_dir_as_root "$mount_path"
+    for ((i=0; i<${#share_mounts[@]}; i++));
+    do
+        mount_path=/$mount_dir/${share_mounts[i]}
+        create_dir_as_root "$mount_path"
 
-    write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
+        write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
 
-    write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
+        write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
 
-    reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
-done
+        reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
+    done
 
-if [ -f state ];
-then
-    rm -f state
-    enable_selinux_temporarily
-fi
+    if [ -f state ];
+    then
+        rm -f state
+        enable_selinux_temporarily
+    fi
+}
