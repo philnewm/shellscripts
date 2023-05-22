@@ -34,7 +34,6 @@ write_systemd_mount_file()
     local fs_type=cifs
     local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino"
     local dir_mode=0700
-# TODO move directory mode to it's own line
 
     mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "$local_mount")
 
