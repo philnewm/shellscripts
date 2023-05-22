@@ -2,35 +2,24 @@
 
 # This file contains a bunch of functions related to mounting network share_mounts on boot
 
-source /lib/file_utils.sh
-source /lib/permission_utils.sh
-source /lib/sys_utils.sh
+source lib/dir_utils.sh
+source lib/file_utils.sh
+source lib/network_utils.sh
+source lib/permission_utils.sh
+source lib/sys_utils.sh
 
 share_mounts=(documents archive library ressources learning)
 server_shares=(documents usb_backup library ressources learning)
+
+username=testuser
+password=testpassword
 hosts_file=/etc/hosts
 server_address=10.32.64.200
 server_name=fileserver
 server_string=$(printf "\n#NAS\n%s %s" "$server_address" "$server_name")
+credentials_path=$HOME/.smb
 mount_dir=mnt
-tmp_path=/tmp/
-systemd_system_path=/tmp/
-# /etc/systemd/system/
-
-move_to_systempath()
-{
-    local share_mount=$1
-    local tmp_path=$2
-    local main_path=$3
-    local mount_dir=$4
-    local owner=$5
-
-    sudo mv "$tmp_path""$mount_dir"-"$share_mount"".mount" "$main_path""$mount_dir"-"$share_mount"".mount"
-    sudo mv "$tmp_path""$mount_dir"-"$share_mount"".automount" "$main_path""$mount_dir"-"$share_mount"".automount"
-    
-    sudo chown "$owner":"$owner" "$main_path""$mount_dir"-"$share_mount"".mount"
-    sudo chown "$owner":"$owner" "$main_path""$mount_dir"-"$share_mount"".automount"
-}
+systemd_system_path=/etc/systemd/system/
 
 write_credentials_file()
 {
@@ -43,7 +32,7 @@ write_credentials_file()
         credentials_content=$(printf "username=%s" "$username")
         credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
 
-        append_string_to_file "$credentials_content"
+        append_string_to_file "$credentials_content" "$path"
         set_exclusive_rw_owner "root" "$path"
         return 0
     fi
@@ -52,9 +41,13 @@ write_credentials_file()
     return 1
 }
 
-write_credentials_file "$username" "$password"
+write_credentials_file "$username" "$password" "$credentials_path"
 append_string_to_file_as_root "$server_string" "$hosts_file"
-disable_selinux_temporarily
+if [ "$(getenforce)" = Enforcing ] > /dev/null;
+then
+    touch state
+    disable_selinux_temporarily
+fi
 
 for ((i=0; i<${#share_mounts[@]}; i++));
 do
@@ -68,4 +61,8 @@ do
     # reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
 done
 
-enable_selinux_temporarily
+if [ -f state ];
+then
+    rm -f state
+    enable_selinux_temporarily
+fi

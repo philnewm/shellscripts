@@ -16,7 +16,7 @@ test_write_systemd_mount_file()
     if [ -f $mount_file ];
     then
         echo "[PASS] ${FUNCNAME[0]} unit file $mount_file created"
-        # sudo rm -f $mount_file
+        sudo rm -f $mount_file
         return 0
     fi
 
@@ -38,7 +38,7 @@ test_write_systemd_auto_mount_file()
     if [ -f $auto_mount_file ];
     then
         echo "[PASS] ${FUNCNAME[0]} unit file $auto_mount_file created"
-        # sudo rm -f $auto_mount_file
+        sudo rm -f $auto_mount_file
         return 0
     fi
 

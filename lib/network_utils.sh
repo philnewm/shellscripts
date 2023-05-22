@@ -32,16 +32,17 @@ write_systemd_mount_file()
 
     # === settings ===
     local fs_type=cifs
-    local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino
-DirectoryMode=0700"
+    local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino"
+    local dir_mode=0700
 # TODO move directory mode to it's own line
 
     mount_content=$(printf "[Unit]\nDescription=mount %s share\n\n" "$local_mount")
 
-    mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s}\n\n" "$mount_content" "$server_name" "$external_mount")
+    mount_content=$(printf "%s\n\n[Mount]\nWhat=//%s/%s\n\n" "$mount_content" "$server_name" "$external_mount")
     mount_content=$(printf "%s\nWhere=/%s/%s\n" "$mount_content" "$mount_point" "$local_mount")
     mount_content=$(printf "%s\nType=%s\n" "$mount_content" "$fs_type")
     mount_content=$(printf "%s\nOptions=%s\n" "$mount_content" "$mnt_options")
+    mount_content=$(printf "%s\nDirectoryMode=%s\n" "$mount_content" "$dir_mode")
 
     mount_content=$(printf "%s\n\n[Install]\n" "$mount_content")
     mount_content=$(printf "%s\nWantedBy=multi-user.target" "$mount_content")
