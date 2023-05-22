@@ -58,7 +58,7 @@ do
 
     write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
 
-    # reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
+    reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
 done
 
 if [ -f state ];
