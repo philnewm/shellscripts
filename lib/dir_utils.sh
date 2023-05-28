@@ -19,32 +19,28 @@ check_dir_existence()
 cleanup_dir()
 {
     # === parameters ===
-    local dir_name=$1
-    local path=$2
+    local dir_path=$1
 
     # === logic ===
-    cd "$path" || return 1
-    rm -fR "$dir_name" 2>/dev/null || return 1
-    echo "[OK] Removed $dir_name from $path"
+    rm -fR "$dir_path" 2>/dev/null || return 1
+    echo "[OK] Removed $dir_path"
     return 0
 }
 
 root_cleanup_dir()
 {
     # === parameters ===
-    local dir_name=$1
-    local path=$2
+    local dir_path=$1
 
     # === logic ===
-    cd "$path" || exit
-    sudo rm -fR "$dir_name" 2>/dev/null
-    echo "[OK] Removed $dir_name from $path using root permissions"
+    sudo rm -fR "$dir_path" 2>/dev/null
+    echo "[OK] Removed $dir_path using root permissions"
     return 0
 }
 
 create_dir_as_root()
 {
-    local path=$1 
+    local path=$1
 
     if [ -d "$path" ]; then
         echo "[INFO] Skipping \"$path\" -> already exists."

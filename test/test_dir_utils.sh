@@ -19,52 +19,57 @@ check_dir_existence()
 
 test_cleanup_dir()
 {
-    path=../tmp/
-    # TODO generate random ID for this test file
-    dir_name=test_dir
-    mkdir $path$dir_name || return 1
+    path=$(mktemp -dp ../)
+    dir_name=$(mktemp -dp "$path") || return 1
 
-    cleanup_dir "$dir_name" "$path"
+    cleanup_dir "$dir_name"
 
-    if [ ! -d $path$dir_name ];
+    if [ ! -d "$dir_name" ];
     then
         echo "[PASS]: ${FUNCNAME[0]}"
+        rmdir "$path"
         return 0
     fi
+
+    rmdir "$path"
 }
 
 test_root_cleanup_dir()
 {
-    path=../root_tmp/
-    # TODO generate random ID for this test file
-    dir_name=test_dir
-    sudo mkdir $path$dir_name || return 1
+    path=$(sudo mktemp -dp ../)
+    dir_name=$(sudo mktemp -dp "$path") || return 1
 
-    if cleanup_dir "$dir_name" "$path";
+    if cleanup_dir "$dir_name";
     then
         echo "[FAIL] ${FUNCNAME[0]} $USER was able to deleted $dir_name"
+        sudo rmdir "$path"
         return 1
     fi
 
     root_cleanup_dir "$dir_name" "$path"
 
-    if [ ! -d $path$dir_name ];
+    if [ ! -d "$dir_name" ];
     then
         echo "[PASS]: ${FUNCNAME[0]}"
+        sudo rmdir "$path"
         return 0
     fi
+
+    sudo rmdir "$path"
 }
 
 test_create_dir_as_root()
 {
-    local path=../root_tmp/test_dir
+    top_path=$(sudo mktemp -dp ../)
+    path=$top_path/sample_dir
     create_dir_as_root "$path"
-    dir_owner=$(stat -c "%U" $path)
+    dir_owner=$(sudo stat -c "%U" "$path")
 
     if [ "$dir_owner" = root ];
     then
         echo "[PASS] ${FUNCNAME[0]} \"$path\" created as root"
-        sudo rm -R $path
+        sudo rm -R "$path"
+        sudo rmdir "$top_path"
         return 0
     fi
 

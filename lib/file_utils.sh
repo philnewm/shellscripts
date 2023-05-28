@@ -53,7 +53,7 @@ append_string_to_file_as_root()
     local input_string=$1
     local file_name=$2
 
-    if grep -Fxq "$input_string" "$file_name";
+    if sudo grep -Fxq "$input_string" "$file_name";
     then
         echo "skipping \"$input_string\" already found in file \"$file_name\""
         return 0

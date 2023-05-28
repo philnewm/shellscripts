@@ -26,7 +26,7 @@ write_systemd_mount_file()
 
     if [ -f "$mount_file" ];
     then
-        echo "skipping \"$mount_file\" already exists"
+        echo "[INFO] skipping \"$mount_file\" -> already exists"
         return 0
     fi
 
@@ -64,7 +64,7 @@ write_systemd_auto_mount_file()
 
     if [ -f "$auto_mount_file" ];
     then
-        echo "skipping \"$auto_mount_file\" already exists"
+        echo "[INFO] skipping \"$auto_mount_file\" -> already exists"
         return 0
     fi
 

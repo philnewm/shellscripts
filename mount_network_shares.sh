@@ -26,18 +26,18 @@ write_credentials_file()
     local username=$1
     local password=$2
     local path=$3
-
+    
     if ! check_file_existence "$path";
     then
         credentials_content=$(printf "username=%s" "$username")
         credentials_content=$(printf "%s\npassword=%s" "$credentials_content" "$password")
-
+        
         append_string_to_file "$credentials_content" "$path"
         set_exclusive_rw_owner "root" "$path"
         return 0
     fi
-
-    echo "skipping \"$path\" already exists"
+    
+    echo "[INFO] skipping \"$path\" -> already exists"
     return 1
 }
 
@@ -50,16 +50,16 @@ mount_shares()
         touch state
         disable_selinux_temporarily
     fi
-
+    
     for ((i=0; i<${#share_mounts[@]}; i++));
     do
         mount_path=/$mount_dir/${share_mounts[i]}
         create_dir_as_root "$mount_path"
-
+        
         write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
-
-        write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
-
+        
+        write_systemd_auto_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
+        
         reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
     done
 
