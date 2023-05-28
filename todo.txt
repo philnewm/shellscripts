@@ -1,0 +1,5 @@
+# setup firefox with addons automatically
+# update system
+# install nvidia drivers automatically
+# setup nomachine automatically
+# setup houdini from classic installer
