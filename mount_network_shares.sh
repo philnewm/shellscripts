@@ -37,7 +37,6 @@ write_credentials_file()
         return 0
     fi
     
-    echo "[INFO] skipping \"$path\" -> already exists"
     return 1
 }
 
