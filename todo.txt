@@ -1,4 +1,5 @@
-# setup firefox with addons automatically
+# setup firefox with necessary settings setup
+# addons automatically
 # update system
 # install nvidia drivers automatically
 # setup nomachine automatically
