@@ -14,5 +14,10 @@ enable_selinux_temporarily()
     echo "[OK] Set se_linux to enforce temporarely"
 }
 
+update_system() 
+{
+	sude dnf update -y
+}
+
 # TODO change SE Linux Settings permanent
 # sudo /etc/selinux/config change SELINUX=enforcing to SELINUX=permissive
