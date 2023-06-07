@@ -9,7 +9,7 @@ download_nomachine()
     local setup=$2
     local tmp=$3
 
-	# TODO implement without dependecy on smb shares
+	# TODO implement without dependency on smb shares
 	cp "$network_dir"/"$setup" "$tmp"
 
 	cd "$tmp" || exit
