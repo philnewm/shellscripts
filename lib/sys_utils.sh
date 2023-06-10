@@ -16,7 +16,7 @@ enable_selinux_temporarily()
 
 update_system() 
 {
-	sude dnf update -y
+	sudo dnf update -y
 }
 
 # TODO change SE Linux Settings permanent
