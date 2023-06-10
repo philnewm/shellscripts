@@ -2,9 +2,10 @@
 
 source mount_network_shares.sh
 source /lib/sys_utils.sh
+source /lib/driver.sh
 
 update_system
-# check and install nvidia driver
+install_nvidia_driver
 # set basic default configs for gnome (tweaks)
 # set default settings for firefox
 mount_shares
