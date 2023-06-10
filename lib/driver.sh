@@ -24,5 +24,3 @@ install_nvidia_driver()
 	echo "No Nvidia GPU found"
 	return 1
 }
-
-install_nvidia_driver
