@@ -27,7 +27,7 @@ write_credentials_file()
     local username=$1
     local password=$2
     local path=$3
-    
+
     if ! check_file_existence "$path";
     then
         credentials_content=$(printf "username=%s" "$username")
@@ -37,12 +37,19 @@ write_credentials_file()
         set_exclusive_rw_owner "root" "$path"
         return 0
     fi
-    
+
     return 1
 }
 
 mount_shares()
 {
+    if [ $username = "testuser" ] || [ $password = "testpassword" ];
+    then
+        echo "[WARNING] Skipping mount_shares"
+        echo "Please change username and password default values"
+        return 1
+    fi
+
     write_credentials_file "$username" "$password" "$credentials_path"
     append_string_to_file_as_root "$server_string" "$hosts_file"
     if [ "$(getenforce)" = Enforcing ] > /dev/null;
@@ -50,7 +57,7 @@ mount_shares()
         touch state
         disable_selinux_temporarily
     fi
-    
+
     for ((i=0; i<${#share_mounts[@]}; i++));
     do
         mount_path=/$mount_dir/${share_mounts[i]}

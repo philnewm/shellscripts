@@ -1,10 +1,10 @@
 #! /bin/bash
 
 source mount_network_shares.sh
-source /lib/sys_utils.sh
-source /lib/driver.sh
+source lib/sys_utils.sh
+source lib/driver.sh
 
-sudo -i
+# TODO check why sudo -i coesn't wqork right away
 
 update_system
 install_nvidia_driver
