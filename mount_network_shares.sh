@@ -62,11 +62,11 @@ mount_shares()
     do
         mount_path=/$mount_dir/${share_mounts[i]}
         create_dir_as_root "$mount_path"
-        
+
         write_systemd_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
-        
+
         write_systemd_auto_mount_file "${share_mounts[i]}" "${server_shares[i]}" "$mount_dir" "$server_name" "$systemd_system_path"
-        
+
         reload_daemon_for_mount_point "${share_mounts[i]}" "$mount_dir"
     done
 
