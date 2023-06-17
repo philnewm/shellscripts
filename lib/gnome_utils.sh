@@ -9,40 +9,42 @@ install_ui_tools()
 
 tweaks_settings()
 {
-    org.gnome.tweaks show-extensions-notice false
+    gsettings set org.gnome.tweaks show-extensions-notice false
 
     # fonts
-    org.gnome.desktop.interface font-name 'Cantarell Bold 11'
-    org.gnome.desktop.interface document-font-name 'Cantarell 11'
-    org.gnome.desktop.interface monospace-font-name 'Source Code Pro 10'
-    org.gnome.desktop.wm.preferences titlebar-font 'Carlito Bold Italic 11'
+    gsettings set org.gnome.desktop.interface font-name 'Cantarell Bold 11'
+    gsettings set org.gnome.desktop.interface document-font-name 'Cantarell 11'
+    gsettings set org.gnome.desktop.interface monospace-font-name 'Source Code Pro 10'
+    gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Carlito Bold Italic 11'
     
     #keyboard mouse
-    org.gnome.mutter locate-pointer-key 'Control_L'
+    gsettings set org.gnome.mutter locate-pointer-key 'Control_L'
 
     #top bar
-    org.gnome.desktop.interface clock-show-weekday true
+    gsettings set org.gnome.desktop.interface clock-show-weekday true
 
     # title bars
-    org.gnome.desktop.wm.preferences action-middle-click-titlebar 'minimize'
-    org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:appmenu'
+    gsettings set org.gnome.desktop.wm.preferences action-middle-click-titlebar 'minimize'
+    gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:appmenu'
 
     # windows
-    org.gnome.mutter attach-modal-dialogs false
+    gsettings set org.gnome.mutter attach-modal-dialogs false
 }
 
 enable_user_extension()
 {
     sudo dnf install gnome-shell-extension-user-theme -y
+    # TODO enable user-themes
     gnome-session-quit
+    gsettings set org.gnome.shell enabled-extensions ['user-theme@gnome-shell-extensions.gcampax.github.com']
 }
 
 activate_themes()
 {
-    org.gnome.desktop.interface cursor-theme 'Qogir'
-    org.gnome.desktop.interface icon-theme 'Tela-circle-purple-dark'
-    org.gnome.shell.extensions.user-theme name 'Lavanda-Dark'
-    org.gnome.desktop.interface gtk-theme 'Lavanda-Dark'
+    gsettings set org.gnome.desktop.interface cursor-theme 'Qogir'
+    gsettings set org.gnome.desktop.interface icon-theme gsettings set 'Tela-circle-purple-dark'
+    gsettings set org.gnome.shell.extensions.user-theme name 'Lavanda-Dark'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Lavanda-Dark'
 }
 
 install_shell_themes()
@@ -77,21 +79,21 @@ install_cursor_theme()
 gnome_settings()
 {
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-    org.gnome.desktop.interface enable-hot-corners false
+    gsettings set org.gnome.desktop.interface enable-hot-corners false
 
     # file history
-    org.gnome.desktop.privacy remember-recent-files true
-    org.gnome.desktop.privacy recent-files-max-age -1
+    gsettings set org.gnome.desktop.privacy remember-recent-files true
+    gsettings set org.gnome.desktop.privacy recent-files-max-age -1
 
     #trash and temp settings
-    org.gnome.desktop.privacy remove-old-trash-files true
-    org.gnome.desktop.privacy remove-old-temp-files true
-    org.gnome.desktop.privacy old-files-age uint32 30
+    gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+    gsettings set org.gnome.desktop.privacy remove-old-temp-files true
+    gsettings set org.gnome.desktop.privacy old-files-age uint32 30
 }
 
 nautilus_settings()
 {
-    org.gnome.nautilus.preferences default-folder-viewer 'list-view'
+    gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
 }
 
 get_settings()
