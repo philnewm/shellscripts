@@ -11,7 +11,6 @@ source lib/sys_utils.sh
 share_mounts=(documents archive library ressources learning)
 server_shares=(documents usb_backup library ressources learning)
 
-# TODO add sanity check if defaults got changed
 username=testuser
 password=testpassword
 hosts_file=/etc/hosts

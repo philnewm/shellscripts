@@ -23,3 +23,5 @@ update_system()
 # sudo /etc/selinux/config change SELINUX=enforcing to SELINUX=permissive
 
 # TODO check for rpm fusion repo
+# TODO change dnf defaults
+# https://itsfoss.com/things-to-do-after-installing-fedora/
