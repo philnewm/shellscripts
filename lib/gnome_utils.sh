@@ -46,7 +46,7 @@ set_extensions()
 activate_themes()
 {
     gsettings set org.gnome.desktop.interface cursor-theme 'Qogir'
-    gsettings set org.gnome.desktop.interface icon-theme gsettings set 'Tela-circle-purple-dark'
+    gsettings set org.gnome.desktop.interface icon-theme 'Tela-circle-purple-dark'
     gsettings set org.gnome.shell.extensions.user-theme name 'Lavanda-Dark'
     gsettings set org.gnome.desktop.interface gtk-theme 'Lavanda-Dark'
 }
