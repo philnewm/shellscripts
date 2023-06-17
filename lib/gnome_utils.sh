@@ -34,9 +34,13 @@ tweaks_settings()
 enable_user_extension()
 {
     sudo dnf install gnome-shell-extension-user-theme -y
-    # TODO enable user-themes
     gnome-session-quit
-    gsettings set org.gnome.shell enabled-extensions ['user-theme@gnome-shell-extensions.gcampax.github.com']
+}
+
+set_extensions()
+{
+    gnome-extensions enable user-theme@gnome-shell-extensions.gcampax.github.com
+    gnome-extensions disable background-logo@fedorahosted.org
 }
 
 activate_themes()

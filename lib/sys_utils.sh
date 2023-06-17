@@ -21,3 +21,5 @@ update_system()
 
 # TODO change SE Linux Settings permanent
 # sudo /etc/selinux/config change SELINUX=enforcing to SELINUX=permissive
+
+# TODO check for rpm fusion repo

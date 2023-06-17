@@ -16,7 +16,8 @@ setup_de()
     install_shell_themes
 
     enable_user_extension
-
+    
+    set_extensions
     activate_themes
 }
 
