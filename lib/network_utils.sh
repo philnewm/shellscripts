@@ -32,6 +32,7 @@ write_systemd_mount_file()
 
     # === settings ===
     local fs_type=cifs
+    # TODO check out these subtitutions: $(id -u) $(id -g)
     local mnt_options="credentials=$HOME/.smb,rw,uid=1000,gid=1000,iocharset=utf8,_netdev,noserverino"
     local dir_mode=0700
 
