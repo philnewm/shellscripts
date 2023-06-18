@@ -9,6 +9,7 @@ source lib/driver.sh
 update_system
 enable_rpm_fusion
 install_nvidia_driver
+change_host_name "Fedora Machine"
 # set basic default configs for gnome (tweaks)
 # set default settings for firefox
 mount_shares

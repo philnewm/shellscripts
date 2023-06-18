@@ -79,3 +79,8 @@ write_systemd_auto_mount_file()
 
     echo "$auto_mount_content" | sudo tee "$auto_mount_file" > /dev/null
 }
+
+change_host_name()
+{
+    sudo hostnamectl set-hostname "$1"
+}
