@@ -18,7 +18,7 @@ tweaks_settings()
     gsettings set org.gnome.desktop.wm.preferences titlebar-font 'Carlito Bold Italic 11'
     
     #keyboard mouse
-    gsettings set org.gnome.mutter locate-pointer-key 'Control_L'
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:none']"
 
     #top bar
     gsettings set org.gnome.desktop.interface clock-show-weekday true
