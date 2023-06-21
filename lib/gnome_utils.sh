@@ -5,6 +5,7 @@ install_ui_tools()
     sudo dnf install gnome-tweaks -y
     sudo dnf install ulauncher -y
     sudo dnf install gnome-extensions-app -y
+    sudo dnf install gnome-shell-extension-user-theme -y
 }
 
 tweaks_settings()
@@ -29,12 +30,6 @@ tweaks_settings()
 
     # windows
     gsettings set org.gnome.mutter attach-modal-dialogs false
-}
-
-enable_user_extension()
-{
-    sudo dnf install gnome-shell-extension-user-theme -y
-    gnome-session-quit
 }
 
 set_extensions()

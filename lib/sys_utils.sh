@@ -25,3 +25,9 @@ update_system()
 # TODO check for rpm fusion repo
 # TODO change dnf defaults
 # https://itsfoss.com/things-to-do-after-installing-fedora/
+
+enable_execution_on_login()
+{
+    # TODO test this
+    echo basename -- "$0" >> ~/.bashrc
+}
