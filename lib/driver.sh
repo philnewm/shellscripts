@@ -6,14 +6,14 @@ source lib/sys_utils.sh
 
 install_nvidia_driver()
 {
+	if nvidia-smi 1>/dev/null 2>&1;
+	then
+		echo "[INFO] Skipping nvidia driver -> already installed."
+		return 0
+	fi
+
 	if echo "$(sudo lshw -c "video" | grep "vendor")"="NVIDIA Coporation";
 	then
-		if nvidia-smi 1>/dev/null 2>&1;
-		then
-			echo "[INFO] Skipping nvidia driver -> already installed."
-			return 0
-		fi
-
 		update_system
 
 		sudo dnf install akmod-nvidia -y
