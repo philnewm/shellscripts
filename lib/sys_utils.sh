@@ -26,8 +26,20 @@ update_system()
 # TODO change dnf defaults
 # https://itsfoss.com/things-to-do-after-installing-fedora/
 
-enable_execution_on_login()
+execute_script_on_login()
 {
-    # TODO test this
-    echo basename -- "$0" >> ~/.bashrc
+    path_to_scipt=$1
+    echo "$path_to_scipt" >> ~/.bashrc
+
+    cp /usr/share/applications/org.gnome.Terminal.desktop ~/.config/autostart/
+}
+
+disable_script_on_login()
+{
+    path_to_remove=$1
+
+    grep -v "$path_to_remove" ~/.bashrc > ~/.bashrc_temp && mv ~/.bashrc_temp ~/.bashrc
+
+    cd ~/.config/autostart/ || exit 1
+    rm org.gnome.Terminal.desktop
 }
