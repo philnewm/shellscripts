@@ -11,6 +11,8 @@ install_nvidia_driver()
 		return 0;
 	fi
 
+	sudo dnf install lshw -y
+
 	if echo "$(sudo lshw -c "video" | grep "vendor")"="NVIDIA Coporation";
 	then
 		sudo dnf update -y
