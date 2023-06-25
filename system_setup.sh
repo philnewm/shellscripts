@@ -2,13 +2,14 @@
 
 source src/network_setup/mount_network_shares.sh
 source src/sys_setup/driver.sh
-sourcve src/ui_setup/gnome_config.sh
+source src/ui_setup/gnome_config.sh
 
 # TODO check why sudo -i coesn't work right away
 tmp_state_path="state/"
 gpu_driver_installed_state="state_driver_installed"
 theme_extension_installed="state_theme_extension"
 
+# TODO check if exists already 
 mkdir "$tmp_state_path"
 
 if [ ! -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
