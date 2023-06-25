@@ -20,7 +20,7 @@ then
     # TODO check auto login enable/disable
     # TODO change default grub config for faster reboot
     mount_shares
-    touch "$($tmp_state_path$gpu_driver_installed_state)"
+    touch "$tmp_state_path$gpu_driver_installed_state"
     sudo reboot
 fi
 
