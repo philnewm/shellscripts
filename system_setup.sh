@@ -18,6 +18,7 @@ then
     # change_host_name "Fedora Machine"
     # change_dnf_settings
     sudo dnf update -y
+    # TODO check for errors since it's broken on testing
     mount_shares || exit 1
     enable_rpm_fusion
     install_nvidia_driver
