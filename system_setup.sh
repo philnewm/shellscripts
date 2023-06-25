@@ -8,7 +8,9 @@ tmp_state_path="state/"
 gpu_driver_installed_state="state_driver_installed"
 theme_extension_installed="state_theme_extension"
 
-if [ ! -e "$($tmp_state_path$gpu_driver_installed_state)" ] && [ ! -e "$($tmp_state_path$theme_extension_installed)" ];
+mkdir "$tmp_state_path"
+
+if [ ! -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
     # change_host_name "Fedora Machine"
     # change_dnf_settings
