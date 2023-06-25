@@ -9,7 +9,7 @@ check_file_existence()
 
     # === logic ===
     if [ -f "$path" ]; then
-        echo "[INFO] File \"$path\" -> exists."
+        echo "[INFO] File \"$path\" exists."
         return 0
     fi
 

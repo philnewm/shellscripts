@@ -1,15 +1,15 @@
 #! /bin/bash
 
-source mount_network_shares.sh
-source lib/sys_utils.sh
-source lib/driver.sh
+source src/network_setup/mount_network_shares.sh
+source src/sys_setup/driver.sh
 
-# TODO check why sudo -i coesn't wqork right away
+# TODO check why sudo -i doesn't work right away
 
-update_system
+sudo dnf update -y
 enable_rpm_fusion
 install_nvidia_driver
-change_host_name "Fedora Machine"
+# change_host_name "Fedora Machine"
+# change_dnf_settings
 # set basic default configs for gnome (tweaks)
 # set default settings for firefox
 mount_shares

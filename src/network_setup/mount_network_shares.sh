@@ -2,11 +2,11 @@
 
 # This file contains a bunch of functions related to mounting network share_mounts on boot
 
-source ../lib/dir_utils.sh
-source ../lib/file_utils.sh
-source ../lib/network_utils.sh
-source ../lib/permission_utils.sh
-source ../lib/sys_utils.sh
+source src/lib/dir_utils.sh
+source src/lib/file_utils.sh
+source src/lib/network_utils.sh
+source src/lib/permission_utils.sh
+source src/lib/sys_utils.sh
 
 share_mounts=(documents archive library ressources learning)
 server_shares=(documents usb_backup library ressources learning)

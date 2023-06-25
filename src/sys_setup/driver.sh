@@ -2,7 +2,7 @@
 
 # This file contains a bunch of functions related to installing drivers.
 
-source ../lib/sys_utils.sh
+source src/lib/sys_utils.sh
 
 install_nvidia_driver()
 {

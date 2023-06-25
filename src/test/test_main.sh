@@ -1,10 +1,17 @@
 #! /bin/bash
 
+# This file executes all test-functions
+
+source test_autostart.sh
 source test_dir_utils.sh
 source test_file_utils.sh
 source test_network_utils.sh
 source test_permission_utils.sh
 source test_sys_utils.sh
+
+# === autostart ===
+test_disable_script_on_login
+test_execute_script_on_login
 
 # === dir ===
 test_cleanup_dir
