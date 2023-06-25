@@ -11,6 +11,7 @@ theme_extension_installed="state_theme_extension"
 
 # TODO check if exists already 
 mkdir "$tmp_state_path"
+script_dir=$(pwd)
 
 if [ ! -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
@@ -22,6 +23,7 @@ then
     install_nvidia_driver
     # TODO check auto login enable/disable
     # TODO change default grub config for faster reboot
+    cd "$script_dir" || exit 1
     touch "$tmp_state_path$gpu_driver_installed_state"
     sudo reboot
 fi
@@ -29,6 +31,7 @@ fi
 if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
     setup_gnome_environment
+    cd "$script_dir" || exit 1
     touch "$tmp_state_path$theme_extension_installed"
     sudo systemctl restart gdm
 fi
