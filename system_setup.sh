@@ -2,6 +2,7 @@
 
 source src/network_setup/mount_network_shares.sh
 source src/sys_setup/driver.sh
+sourcve src/ui_setup/gnome_config.sh
 
 # TODO check why sudo -i coesn't work right away
 tmp_state_path="state/"
@@ -27,7 +28,7 @@ fi
 if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
     setup_gnome_environment
-    touch "$($tmp_state_path$theme_extension_installed)"
+    touch "$tmp_state_path$theme_extension_installed"
     sudo systemctl restart gdm
 fi
 
