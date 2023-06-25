@@ -30,12 +30,14 @@ fi
 
 if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
+# TODO some gsetting produced error
     setup_gnome_environment
     cd "$script_dir" || exit 1
     touch "$tmp_state_path$theme_extension_installed"
     sudo systemctl restart gdm
 fi
 
+# TODO check why coredump
 if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ -e "$tmp_state_path$theme_extension_installed" ];
 then
     activate_themes
