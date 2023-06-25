@@ -1,7 +1,7 @@
 #! /bin/bash
 
-source ../ui_setup/gnome_utils.sh
-source ../lib/sys_utils.sh
+source src/lib/gnome_utils.sh
+source src/lib/sys_utils.sh
 
 setup_gnome_environment()
 {
