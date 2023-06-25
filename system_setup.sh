@@ -15,11 +15,11 @@ then
     # change_host_name "Fedora Machine"
     # change_dnf_settings
     sudo dnf update -y
+    mount_shares || exit 1
     enable_rpm_fusion
     install_nvidia_driver
     # TODO check auto login enable/disable
     # TODO change default grub config for faster reboot
-    mount_shares
     touch "$tmp_state_path$gpu_driver_installed_state"
     sudo reboot
 fi
