@@ -11,8 +11,6 @@ install_nvidia_driver()
 		return 0;
 	fi
 
-	sudo dnf install lshw -y
-
 	if [ "$(lspci -nn | grep -i "VGA compatible controller" | cut -d " " -f 6)" = "NVIDIA" ];
 	then
 		sudo dnf install akmod-nvidia -y
