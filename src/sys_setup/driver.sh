@@ -13,7 +13,7 @@ install_nvidia_driver()
 
 	sudo dnf install lshw -y
 
-	if echo "$(sudo lshw -c "video" | grep "vendor")"="NVIDIA Coporation";
+	if [ "$(lspci -nn | grep -i "VGA compatible controller" | cut -d " " -f 6)" = "NVIDIA" ];
 	then
 		sudo dnf install akmod-nvidia -y
 		sudo dnf install xorg-x11-drv-nvidia-cuda -y

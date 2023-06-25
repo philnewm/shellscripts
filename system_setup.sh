@@ -10,13 +10,13 @@ theme_extension_installed="state_theme_extension"
 
 if [ ! -e "$($tmp_state_path$gpu_driver_installed_state)" ] && [ ! -e "$($tmp_state_path$theme_extension_installed)" ];
 then
+    # change_host_name "Fedora Machine"
+    # change_dnf_settings
     sudo dnf update -y
     enable_rpm_fusion
     install_nvidia_driver
     # TODO check auto login enable/disable
     # TODO change default grub config for faster reboot
-    # change_host_name "Fedora Machine"
-    # change_dnf_settings
     mount_shares
     touch "$($tmp_state_path$gpu_driver_installed_state)"
     sudo reboot
