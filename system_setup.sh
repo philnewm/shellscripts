@@ -24,14 +24,14 @@ then
     sudo reboot
 fi
 
-if [ -e "$($tmp_state_path$gpu_driver_installed_state)" ] && [ ! -e "$($tmp_state_path$theme_extension_installed)" ];
+if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ ! -e "$tmp_state_path$theme_extension_installed" ];
 then
     setup_gnome_environment
     touch "$($tmp_state_path$theme_extension_installed)"
     sudo systemctl restart gdm
 fi
 
-if [ -e "$($tmp_state_path$gpu_driver_installed_state)" ] && [ -e "$($tmp_state_path$theme_extension_installed)" ];
+if [ -e "$tmp_state_path$gpu_driver_installed_state" ] && [ -e "$tmp_state_path$theme_extension_installed" ];
 then
     activate_themes
 fi
