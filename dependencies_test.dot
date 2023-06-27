@@ -1,0 +1,13 @@
+digraph G {
+    splines="TRUE";
+
+    /* Entities */
+    shortName [label="tester", shape="note"]
+    
+    /* Relationships */
+    A -> {B, C}[label="label", color=blue]
+    B -> D
+
+    /* Ranks */
+    { rank=same; shortName; };
+}

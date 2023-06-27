@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Output file for the DOT graph
-output_file="dependencies.dot"
+output_file="bash_dependencies.dot"
 
 # Array to keep track of processed scripts
 declare -a processed_scripts
@@ -12,7 +12,7 @@ extract_dependencies() {
   local script_name="${script_file%.*}"
 
   # Check if the script has already been processed
-  if [[ " ${processed_scripts[@]} " =~ " ${script_name} " ]]; then
+  if [[ " ${processed_scripts[*]} " =~ ${script_name} ]]; then
     return
   fi
 

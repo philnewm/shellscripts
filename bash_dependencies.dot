@@ -1,0 +1,31 @@
+digraph Dependencies {
+"system_setup" -> {
+    "/src/sys_setup/driver",
+    "/src/network_setup/mount_network_shares",
+    "/src/ui_setup/gnome_config"
+    };
+"/src/sys_setup/driver" -> "/src/lib/sys_utils";
+"/src/network_setup/mount_network_shares" -> {
+    "/src/lib/dir_utils",
+    "/src/lib/file_utils",
+    "/src/lib/network_utils",
+    "/src/lib/permission_utils",
+    "/src/lib/sys_utils"
+    };
+"/src/ui_setup/gnome_config" -> "/src/lib/gnome_utils";
+"test_sys_utils" -> "src/lib/sys_utils";
+"test_autostart" -> "/src/sys_setup/autostart";
+"/src/sys_setup/autostart" -> "src/lib/file_utils";
+"test_network_utils" -> "src/lib/network_utils";
+"test_main" -> {
+    "test_autostart",
+    "test_dir_utils",
+    "test_file_utils",
+    "test_network_utils",
+    "test_permission_utils",
+    "test_sys_utils"
+};
+"test_file_utils" -> "src/lib/file_utils";
+"test_permission_utils" -> "src/lib/permission_utils";
+"test_dir_utils" -> "src/lib/dir_utils";
+}
