@@ -1,0 +1,56 @@
+digraph Dependencies {
+"./lib/driver" -> "lib/sys_utils";
+"./src/sys_setup/driver" -> "src/lib/sys_utils";
+"./src/sys_setup/autostart" -> "src/lib/file_utils";
+"./src/network_setup/mount_network_shares" -> "src/lib/dir_utils";
+"./src/network_setup/mount_network_shares" -> "src/lib/file_utils";
+"./src/network_setup/mount_network_shares" -> "src/lib/network_utils";
+"./src/network_setup/mount_network_shares" -> "src/lib/permission_utils";
+"./src/network_setup/mount_network_shares" -> "src/lib/sys_utils";
+"./src/test/test_sys_utils" -> "../lib/sys_utils";
+"./src/test/test_autostart" -> "src/sys_setup/autostart";
+"src/sys_setup/autostart" -> "src/lib/file_utils";
+"./src/test/test_autostart" -> "src/lib/file_utils";
+"./src/test/test_network_utils" -> "../lib/network_utils";
+"./src/test/test_main" -> "test_autostart";
+"./src/test/test_main" -> "test_dir_utils";
+"./src/test/test_main" -> "test_file_utils";
+"./src/test/test_main" -> "test_network_utils";
+"./src/test/test_main" -> "test_permission_utils";
+"./src/test/test_main" -> "test_sys_utils";
+"./src/test/test_file_utils" -> "../lib/file_utils";
+"./src/test/test_permission_utils" -> "../lib/permission_utils";
+"./src/test/test_dir_utils" -> "../lib/dir_utils";
+"./test_file" -> "src/sys_setup/autostart";
+"src/sys_setup/autostart" -> "src/lib/file_utils";
+"./test/test_sys_utils" -> "../lib/sys_utils";
+"./test/test_network_utils" -> "../lib/network_utils";
+"./test/test_main" -> "test_dir_utils";
+"./test/test_main" -> "test_file_utils";
+"./test/test_main" -> "test_network_utils";
+"./test/test_main" -> "test_permission_utils";
+"./test/test_main" -> "test_sys_utils";
+"./test/test_file_utils" -> "../lib/file_utils";
+"./test/test_permission_utils" -> "../lib/permission_utils";
+"./test/test_dir_utils" -> "../lib/dir_utils";
+"./system_setup" -> "src/network_setup/mount_network_shares" -> "src/lib/dir_utils";
+"./system_setup" -> "src/network_setup/mount_network_shares" -> "src/lib/file_utils";
+"./system_setup" -> "src/network_setup/mount_network_shares" -> "src/lib/network_utils";
+"./system_setup" -> "src/network_setup/mount_network_shares" -> "src/lib/permission_utils";
+"./system_setup" -> "src/network_setup/mount_network_shares" -> "src/lib/sys_utils";
+"./system_setup" -> "src/sys_setup/driver" -> "src/lib/sys_utils";
+"./system_setup" -> "src/ui_setup/gnome_config"->"src/lib/gnome_utils";
+}
+
+digraph G {
+    splines="FALSE";
+
+    /* Entities */
+    shortName [label="shortName", shape="square"]
+    
+    /* Relationships */
+    F1 -> shortName[label=".63"]
+
+    /* Ranks */
+    { rank=same; shortName; };
+}
