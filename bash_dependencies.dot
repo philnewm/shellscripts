@@ -1,4 +1,5 @@
-digraph Dependencies {
+digraph Dependencies{
+graph [bgcolor="transparent"]
 "system_setup" -> {
     "/src/sys_setup/driver",
     "/src/network_setup/mount_network_shares",
