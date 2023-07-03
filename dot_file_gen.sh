@@ -21,36 +21,43 @@ extract_dependencies() {
   processed_scripts+=("$script_name")
   declare -a dependencies
   # Extract dependencies
-  grep -o 'source[[:space:]]\+[[:alnum:]_./-]*' "$script_file" | cut -d' ' -f2 | while read -r dependency; do
+  while read -r dependency; 
+  do
     # Trim leading "./" from the dependency path
     dependency="${dependency#.}"
     echo "adding $script_name"
-    
     # Trim the ".sh" extension if present
     dependency="${dependency%.sh}"
     echo "with dependency $dependency"
 
-    dependencies+=("$dependency")
+    # TODO make sure dependency works only within the function but result is accessiable outside
+    dependencies+=("\"$dependency\"")
+  done < <(grep -o 'source[[:space:]]\+[[:alnum:]_./-]*' "$script_file" | cut -d' ' -f2)
+
+  echo "dependencies content after search: ${dependencies[*]}"
+
+  if (( ${#dependencies[*]} > 1 ));
+    then
     # Add an edge to the DOT file
-  done
+    dep_edge=$(printf "\"%s\" -> {" "$script_name") 
+
+    for dependency in "${dependencies[@]}";
+    do
+      dep_edge=$(printf "%s\n\t%s," "$dep_edge" "$dependency")
+    done
+    
+    dep_edge="${dep_edge%,}"
+    dep_edge=$(printf "%s}" "$dep_edge")
+    
+    echo "$dep_edge" >> "$output_file"
+  fi
+
+  # Recursively process the dependency
+  # extract_dependencies "${dependency}.sh"
 }
-
-if (( ${#dependencies[*]} > 1 ));
-then
-  echo "$script_name -> {" >> "$output_file"
-
-  for dependency in "${dependencies[@]}"; do
-
-    echo "$dependency, " >> "$output_file"
-  done
-fi
-echo "}" >> "$output_file"
 
 # TODO remove when while loop get reenabled 
 script_file=$1
-
-# Recursively process the dependency
-# extract_dependencies "${dependency}.sh"
 if [ -f $output_file ];
 then
   rm "$output_file"
