@@ -53,6 +53,7 @@ extract_dependencies() {
     echo "$dep_edge" >> "$output_file"
   fi
 
+  # TODO reanable recursion
   # Recursively process the dependency
   # extract_dependencies "${dependency}.sh"
 }
