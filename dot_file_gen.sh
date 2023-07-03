@@ -38,6 +38,7 @@ extract_dependencies() {
 
   if (( ${#dependencies[*]} > 1 ));
     then
+    # TODO implement handling for single dependency scripts
     # Add an edge to the DOT file
     dep_edge=$(printf "\"%s\" -> {" "$script_name") 
 
