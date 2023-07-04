@@ -7,11 +7,11 @@ output_file="$1_dia.dot"
 declare -a processed_scripts
 
 # INFO check for parameter
-# if [ $# -lt 1 ];
-# then
-#   echo "missing parameter \"script\""
-#   exit 1
-# fi
+if [ $# -lt 1 ];
+then
+  echo "missing parameter \"script\""
+  exit 1
+fi
 
 # Function to recursively extract dependencies
 extract_dependencies() {
@@ -64,6 +64,7 @@ extract_dependencies() {
 
     for dependency in "${dependencies[@]}";
     do
+    # TODO replace recursion with loop
       extract_dependencies "${dependency}.sh"
     done
 
@@ -77,30 +78,23 @@ extract_dependencies() {
     echo "$dep_edge" >> "$output_file"
 
     echo "found one dependency in \"$script_name\""
+    # TODO replace recursion with loop
     extract_dependencies "${dependency}.sh"
     return 0
   fi
 }
 
-# TODO remove when while loop get reenabled 
 script_file=$1
-# $1
-if [ -f $output_file ];
+if [ -f "$output_file" ];
 then
   rm "$output_file"
 fi
 
-# Initialize the DOT file
 dot_file=$(printf "digraph Dependencies {")
-# dot_file=$(printf "%s\n\tgraph [bgcolor=\"transparent\"]" "$dot_file")
+dot_file=$(printf "%s\n\tgraph [bgcolor=\"transparent\"]" "$dot_file")
 echo "$dot_file" > "$output_file"
 
-# Process each script file recursively
-# find . -type f -name '*.sh' | while read -r script_file; do
-  # Extract dependencies and add edges to the DOT file
 extract_dependencies "$script_file"
-# done
 
-# Close the DOT file
 echo "}" >> "$output_file"
 
