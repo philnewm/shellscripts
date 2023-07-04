@@ -6,6 +6,13 @@ output_file="bash_dependencies_test.dot"
 # Array to keep track of processed scripts
 declare -a processed_scripts
 
+# INFO check for parameter
+if [ $# -lt 1 ];
+then
+  echo "missing parameter \"script\""
+  exit 1
+fi
+
 # Function to recursively extract dependencies
 extract_dependencies() {
   local script_file="$1"
@@ -30,16 +37,12 @@ extract_dependencies() {
     dependency="${dependency%.sh}"
     echo "with dependency $dependency"
 
-    # TODO make sure dependency works only within the function but result is accessiable outside
     dependencies+=("\"$dependency\"")
   done < <(grep -o 'source[[:space:]]\+[[:alnum:]_./-]*' "$script_file" | cut -d' ' -f2)
 
-  echo "dependencies content after search: ${dependencies[*]}"
-
+  # INFO distinguish between multiple or single dependency per script
   if (( ${#dependencies[*]} > 1 ));
     then
-    # TODO implement handling for single dependency scripts
-    # Add an edge to the DOT file
     dep_edge=$(printf "\"%s\" -> {" "$script_name") 
 
     for dependency in "${dependencies[@]}";
@@ -50,6 +53,11 @@ extract_dependencies() {
     dep_edge="${dep_edge%,}"
     dep_edge=$(printf "%s}" "$dep_edge")
     
+    echo "$dep_edge" >> "$output_file"
+  
+  # TODO find way around else
+  else
+    dep_edge=$(printf "\"%s\" -> \"%s\"" "$script_name" "${#dependencies[0]}")
     echo "$dep_edge" >> "$output_file"
   fi
 
