@@ -7,11 +7,11 @@ output_file="bash_dependencies_test.dot"
 declare -a processed_scripts
 
 # INFO check for parameter
-if [ $# -lt 1 ];
-then
-  echo "missing parameter \"script\""
-  exit 1
-fi
+# if [ $# -lt 1 ];
+# then
+#   echo "missing parameter \"script\""
+#   exit 1
+# fi
 
 # Function to recursively extract dependencies
 extract_dependencies() {
@@ -24,57 +24,75 @@ extract_dependencies() {
     return
   fi
 
-  # Add the script to the processed array
   processed_scripts+=("$script_name")
   declare -a dependencies
-  # Extract dependencies
+
   while read -r dependency; 
   do
-    # Trim leading "./" from the dependency path
-    dependency="${dependency#.}"
-    echo "adding $script_name"
-    # Trim the ".sh" extension if present
-    dependency="${dependency%.sh}"
-    echo "with dependency $dependency"
+  # Trim leading "./" from the dependency path
+  dependency="${dependency#.}"
+  echo "adding $script_name"
+  # Trim the ".sh" extension if present
+  dependency="${dependency%.sh}"
+  echo "with dependency $dependency"
 
-    dependencies+=("\"$dependency\"")
+  dependencies+=("$dependency")
   done < <(grep -o 'source[[:space:]]\+[[:alnum:]_./-]*' "$script_file" | cut -d' ' -f2)
+
+  if [ ${#dependencies[*]} -eq 0 ];
+  then
+    echo "No dependencies found in \"$script_name\""
+    return 0
+  fi
 
   # INFO distinguish between multiple or single dependency per script
   if (( ${#dependencies[*]} > 1 ));
     then
-    dep_edge=$(printf "\"%s\" -> {" "$script_name") 
+    dep_edge=$(printf "\t\"%s\" -> {" "$script_name") 
 
     for dependency in "${dependencies[@]}";
     do
-      dep_edge=$(printf "%s\n\t%s," "$dep_edge" "$dependency")
+      dep_edge=$(printf "%s\n\t\t\"%s\"," "$dep_edge" "$dependency")
     done
     
     dep_edge="${dep_edge%,}"
     dep_edge=$(printf "%s}" "$dep_edge")
     
     echo "$dep_edge" >> "$output_file"
+
+    for dependency in "${dependencies[@]}";
+    do
+      extract_dependencies "${dependency}.sh"
+    done
+
+    echo "found ${#dependencies[*]} dependencies in \"$script_name\""
+    return 0
   
   # TODO find way around else
   else
-    dep_edge=$(printf "\"%s\" -> \"%s\"" "$script_name" "${#dependencies[0]}")
+    dependency=${#dependencies[0]}
+    dep_edge=$(printf "\"%s\" -> \"%s\"" "$script_name" "$dependency")
     echo "$dep_edge" >> "$output_file"
-  fi
 
-  # TODO reanable recursion
-  # Recursively process the dependency
-  # extract_dependencies "${dependency}.sh"
+    echo "found one dependency in \"$script_name\""
+    echo "depency: ${#dependencies[0]}"
+    # extract_dependencies "${dependency}.sh"
+    return 0
+  fi
 }
 
 # TODO remove when while loop get reenabled 
-script_file=$1
+script_file="src/sys_setup/driver.sh"
+# $1
 if [ -f $output_file ];
 then
   rm "$output_file"
 fi
 
 # Initialize the DOT file
-echo "digraph Dependencies {" > "$output_file"
+dot_file=$(printf "digraph Dependencies {")
+# dot_file=$(printf "%s\n\tgraph [bgcolor=\"transparent\"]" "$dot_file")
+echo "$dot_file" > "$output_file"
 
 # Process each script file recursively
 # find . -type f -name '*.sh' | while read -r script_file; do
