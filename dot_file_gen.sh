@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Output file for the DOT graph
-output_file="bash_dependencies_test.dot"
+output_file="$1_dia.dot"
 
 # Array to keep track of processed scripts
 declare -a processed_scripts
@@ -39,6 +39,8 @@ extract_dependencies() {
   dependencies+=("$dependency")
   done < <(grep -o 'source[[:space:]]\+[[:alnum:]_./-]*' "$script_file" | cut -d' ' -f2)
 
+  # echo "all found dependencies: ${dependencies[*]}"
+
   if [ ${#dependencies[*]} -eq 0 ];
   then
     echo "No dependencies found in \"$script_name\""
@@ -70,19 +72,18 @@ extract_dependencies() {
   
   # TODO find way around else
   else
-    dependency=${#dependencies[0]}
+    dependency=${dependencies[0]}
     dep_edge=$(printf "\"%s\" -> \"%s\"" "$script_name" "$dependency")
     echo "$dep_edge" >> "$output_file"
 
     echo "found one dependency in \"$script_name\""
-    echo "depency: ${#dependencies[0]}"
-    # extract_dependencies "${dependency}.sh"
+    extract_dependencies "${dependency}.sh"
     return 0
   fi
 }
 
 # TODO remove when while loop get reenabled 
-script_file="src/sys_setup/driver.sh"
+script_file=$1
 # $1
 if [ -f $output_file ];
 then
